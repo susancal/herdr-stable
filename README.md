@@ -1,8 +1,24 @@
 # Stable for Herdr
 
-Stable is a [Herdr](https://herdr.dev) layout that shows each of your coding agents as a horse in a barn, in a strip above your terminals. It started as a copy of [Office for Herdr](https://github.com/DustyPolk/herdr-office) by DustyPolk, which draws agents as office workers, and it keeps that layout's behavior with new art, sounds and a few changes.
+Stable is a [Herdr](https://herdr.dev) layout that shows each of your coding agents as a horse in a barn, in a strip above your terminals. It is a reskin of [Office for Herdr](https://github.com/DustyPolk/herdr-office) by DustyPolk, with horses drawn over DustyPolk's office.
 
 ![The stable](preview.png)
+
+## Credit to Office for Herdr
+
+Office for Herdr, by [DustyPolk](https://github.com/DustyPolk), is the original layout, and almost all of the code and design in this repo comes from it. DustyPolk designed and built the scene, and the stable runs on DustyPolk's code. The office scene includes the following parts:
+
+- The way the scene tracks each agent's state and moves characters between their desk, the water cooler and the couch.
+- The walking and other animations, the arrivals and departures, the interns, the remote video call, the pizza party and the cat.
+- The wall clock, the weather and seasonal decorations, the night lighting, and the hover and click behavior.
+
+The stable changes the art and the theme on top of the office, with these differences:
+
+- The people are horses, the office is a barn, and the pizza party is an apple delivery.
+- The stable adds the horse sounds and the ribbon wall, and it makes night mode optional.
+- The stable removes the "days since last incident" sign and the "employee of the month" portrait.
+
+If you like the stable, please star and use [the original](https://github.com/DustyPolk/herdr-office), which you can also install by asking the agent in your Herdr window to "Add the layout herdr.dev/layouts/DustyPolk/herdr-office".
 
 ## What the horses do
 
@@ -66,4 +82,4 @@ Ideas for future changes are in `IDEAS.md`.
 
 ## License
 
-MIT, the same as Office for Herdr. See `LICENSE`.
+MIT, the same as Office for Herdr. `LICENSE` keeps DustyPolk's original copyright notice, which the MIT license requires in every copy.
