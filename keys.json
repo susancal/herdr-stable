@@ -1,0 +1,5 @@
+{
+  "layout:stable": {
+    "ctrl-shift-i": "layout.toggle:stable"
+  }
+}
