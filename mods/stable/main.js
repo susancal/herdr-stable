@@ -20,6 +20,10 @@ const NAP_AFTER = 10 * 60 * 1000;
 const ALARM_AFTER = 5 * 60 * 1000;
 const SWEAT_AFTER = 30 * 60 * 1000;
 const BUCKETS_AFTER = 60 * 60 * 1000;
+// A horse kept waiting (done or blocked, and you haven't looked) drops a pile this often.
+const POOP_EVERY = 10 * 60 * 1000;
+const FLIES_AFTER = 20 * 60 * 1000;
+const POOP_SPOTS = [12, 30, 15]; // stall units clear of the legs and the manger posts
 const PARTY_FINISHES = 3, PARTY_WINDOW = 5 * 60 * 1000, PARTY_LENGTH = 8 * 60 * 1000;
 const GRAD_BOW = 2500;
 const SOUND_GAP = 1500;
@@ -105,6 +109,7 @@ export default class Stable extends View {
     this.seen = {}; // address -> what we knew last render: { status, pal }
     this.idleSince = {};
     this.blockedSince = {};
+    this.waitSince = {};
     this.finishes = []; // when agents finished, for the pizza
     this.party = null; // { start }
     this.leaving = {}; // address -> pal: closed agents on their way out
@@ -168,7 +173,7 @@ export default class Stable extends View {
         this.walk(`leave:${k}`, "door", door.x, door.y, WALK_SPEED, cx, at);
         this.sound("trot");
       }
-      delete this.desk[k]; delete this.at[k]; delete this.idleSince[k]; delete this.blockedSince[k]; delete this.seen[k];
+      delete this.desk[k]; delete this.at[k]; delete this.idleSince[k]; delete this.blockedSince[k]; delete this.waitSince[k]; delete this.seen[k];
     }
     const taken = new Set(Object.values(this.desk));
     for (const a of list) {
@@ -191,6 +196,9 @@ export default class Stable extends View {
       else this.idleSince[a.address] ??= changed[a.tab] ?? now;
       if (a.status !== "blocked") delete this.blockedSince[a.address];
       else this.blockedSince[a.address] ??= was === "blocked" || !was ? (changed[a.tab] ?? now) : now;
+      const waiting = (st) => st === "done" || st === "blocked";
+      if (!waiting(a.status)) delete this.waitSince[a.address];
+      else this.waitSince[a.address] ??= waiting(was) || !was ? (changed[a.tab] ?? now) : now;
       if (this.started && a.status === "done" && was && was !== "done") {
         this.finishes.push(now);
         this.award(a, now);
@@ -425,6 +433,7 @@ export default class Stable extends View {
     els.push(D.clock(zoneX - 70, 20, ...clock(this.now)));
     const count = (st) => list.filter((a) => a.status === st).length;
     const napping = list.filter((a) => this.at[a.address]?.spot === "couch").length;
+    const piles = list.reduce((n, a) => n + this.piles(a, now).length, 0);
     const interns = list.reduce((n, a) => n + descendants(all, a.address).length, 0);
     if (this.ribbons.day !== dayOf(this.now)) this.ribbons = { day: dayOf(this.now), list: [] };
     els.push(D.ribbonWall(zoneX + 162, 14, RIBBON_WALL_W, winH + 10, this.ribbons.list));
@@ -434,6 +443,7 @@ export default class Stable extends View {
       ["#ff9a8a", `STUCK     ${count("blocked")}`],
       ["#e8e4dc", `AT TROUGH ${count("idle") - napping}`],
       ["#c9c2ff", `NAPPING   ${napping}`, napping > 0],
+      ["#d9a86a", `MUCK      ${piles}`, piles > 0],
       ["#f2d27a", `FOALS     ${interns}`, interns > 0],
       ["#ff8a7a", "APPLES!!", Boolean(this.party)],
     ]));
@@ -467,12 +477,31 @@ export default class Stable extends View {
       .children([
         ...A.rects(A.STALL.stall, pal), ...A.rects(A.STALL.manger, pal),
         ...(overtime ? A.rects(A.BUCKET_PILE, pal) : []),
+        ...(away ? [] : this.piles(a, Date.now()).slice(0, POOP_SPOTS.length).map((at, k) => this.pile(POOP_SPOTS[k], at, P))),
         this.screen(away ? "idle" : st, away, P),
         ...(branch ? [this.sticky(branch, P)] : []),
         A.layer(A.STALL.shoe, pal, A.SLOT).when(done, (el) => el.loop("left", { from: -1.5, to: 1.5, period: 160 })),
         ...(done ? [this.ding(P), ...this.confetti(P, a.address)] : []),
         ...(plate ? [plate.absolute().left(6 * P).top(pos.back ? (A.BOX - 29) * P : A.BOX * P + 6)] : []),
       ]);
+  }
+
+  // When each pile dropped: one per POOP_EVERY that the horse has been kept waiting.
+  piles(a, now) {
+    const since = a && this.waitSince[a.address];
+    if (!since) return [];
+    const n = Math.floor((now - since) / POOP_EVERY);
+    return Array.from({ length: n }, (_, k) => since + (k + 1) * POOP_EVERY);
+  }
+
+  // A pile on the stall floor, with two flies once it has sat there a while.
+  pile(x, droppedAt, P) {
+    const flies = Date.now() - droppedAt > FLIES_AFTER;
+    const fly = (k) => div().absolute().loop("left", { from: (x - 1 + k * 4) * P, to: (x + 5 - k * 3) * P, period: 700 + k * 230 })
+      .top(0).child(div().size(Math.max(2, P)).rounded_full().bg("#111114")
+        .loop("top", { from: (A.BOX - 7 - k) * P, to: (A.BOX - 11 + k) * P, period: 430 + k * 170 }));
+    return div().absolute().left(0).top(0).size_full()
+      .children([...A.rects(A.POOP.map(([rx, ry, w, h, c]) => [x + rx, ry, w, h, c]), A.PALETTE), ...(flies ? [fly(0), fly(1)] : [])]);
   }
 
   screen(st, screensaver, P) {

@@ -93,6 +93,8 @@ export const STALL = {
 export const APPLES = [
   [2, -19, 8, 4, "bucketGrey"], [2, -20, 8, 1, "iron"], [3, -21, 2, 1, "apple"], [5, -22, 2, 2, "apple"], [7, -21, 2, 1, "apple"], [6, -23, 1, 1, "leaf"],
 ];
+// A pile of horse poop, drawn on the stall floor.
+export const POOP = [[0, -1, 6, 1, "poop"], [1, -2, 5, 1, "poop2"], [1, -3, 4, 1, "poop"], [2, -4, 2, 1, "poop2"], [2, -3, 1, 1, "poopShine"], [4, -2, 1, 1, "poopShine"]];
 export const BUCKET_PILE = [[42, -9, 3, 3, "mug2"], [42, -12, 3, 3, "bucketGrey"], [43, -15, 3, 3, "mug2"]];
 
 export const PUMPKIN = {
@@ -167,7 +169,7 @@ export const PALETTE = {
   sack: "#d8c8a0", sackTie: "#8a6a3a", sackLabel: "#3f7a55",
   barrel: "#8a5a35", barrelShade: "#6b4428", handleWood: "#c9995b",
   apple: "#d94a3a", leaf: "#3f9a55", carrot: "#f08c3a",
-  hoof: "#2a2420", eye: "#1d1d24",
+  hoof: "#2a2420", poop: "#2e1a0c", poop2: "#4a2c14", poopShine: "#a8743e", eye: "#1d1d24",
   saddle: "#5c3a22", bag: "#a0683f", bagFlap: "#7d4f2e",
   blanket: "#c0392b", basket: "#c9995b", basketRim: "#a87c43",
   ribbon: "#3d6fe0", ribbonCenter: "#e0b43d", headset: "#2b2b33",
