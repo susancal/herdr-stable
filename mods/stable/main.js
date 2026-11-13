@@ -252,8 +252,9 @@ export default class Stable extends View {
     const floorY = H - 30;
     const wallBottom = floorY - 14 * P;
     const slot = A.SLOT * P;
-    const front = Math.min(deskCount, FRONT_ROW);
-    const back = Math.max(0, deskCount - FRONT_ROW);
+    // Past one full row, the stalls split evenly between the rows, front row first.
+    const front = deskCount > FRONT_ROW ? Math.ceil(deskCount / 2) : deskCount;
+    const back = deskCount - front;
     const desksW = Math.max(front, back ? back + 0.5 : 0) * slot;
     const gap = 18 * P;
     const doorW = D.DOOR * P;
@@ -265,11 +266,11 @@ export default class Stable extends View {
     const zoneX = x0 + desksW + 50;
     const coolerX = zoneX + A.FEED.width * P + gap;
     const couchX = coolerX + A.TROUGH.width * P + 24 * P;
-    const deskPos = (i) => i < FRONT_ROW
+    const deskPos = (i) => i < front
       ? { x: x0 + i * slot, y: floorY, back: false }
-      : { x: x0 + (i - FRONT_ROW) * slot + slot / 2, y: floorY - 10 * P, back: true };
+      : { x: x0 + (i - front) * slot + slot / 2, y: floorY - 10 * P, back: true };
     return {
-      P, floorY, wallBottom, slot, x0, deskPos, zoneX, coolerX, couchX, doorX, plantL,
+      P, room, floorY, wallBottom, slot, x0, deskPos, zoneX, coolerX, couchX, doorX, plantL,
       plantR: couchX + A.STRAW.width * P + 6 * P,
       door: { x: doorX + 1 * P, y: wallBottom + 2 * P },
     };
@@ -301,7 +302,15 @@ export default class Stable extends View {
 
     A.setScale(Math.max(3, Math.min(6, Math.floor(H / 60))));
     const deskCount = Math.max(MIN_STALLS, here.length, ...Object.values(this.desk).map((i) => i + 1));
-    const g = (this.g = this.geometry(W, H, deskCount));
+    let g = this.geometry(W, H, deskCount);
+    // A crowded barn shrinks until the trough and the straw fit on screen. Everything but
+    // 80px of spacing scales with P.
+    if (g.room > W - 32) {
+      const fit = Math.floor(((W - 32 - 80) / ((g.room - 80) / A.P)) * 4) / 4;
+      A.setScale(Math.max(2, fit));
+      g = this.geometry(W, H, deskCount);
+    }
+    this.g = g;
     this.seat(here, g.door, cx);
     this.track(list, now, cx);
     const P = g.P;

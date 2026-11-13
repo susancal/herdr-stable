@@ -75,7 +75,7 @@ The windows can show your real weather, and the setting is off by default becaus
 ## Known limits
 
 - The stable counts finishes for the ribbon wall and the apples only while it is the layout on screen.
-- With 5 or more horses in a normal-width window, the trough and straw pile run off the right edge of the strip.
+- With many horses, the barn shrinks to fit the window, so the horses get smaller. The name tags of idle horses crowded at the trough overlap, but hovering over a horse still shows its terminal title.
 - The stable keeps the count of recent finishes that starts an apple party in memory, so a reload resets it. The party itself survives reloads.
 
 ## Ideas
