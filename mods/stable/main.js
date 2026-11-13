@@ -25,6 +25,7 @@ const GRAD_BOW = 2500;
 const SOUND_GAP = 1500;
 const RIBBON_WALL_W = 150;
 const STRAW_SPOTS = 3;
+const NAP_GAP = 21; // units between nappers, so each one and its name tag stand apart
 const MIN_STALLS = 3;
 const FRONT_ROW = 6;
 const CHAT = ["…", "neigh", "lgtm", "🥕", "standup?", "ship it", "hay?", "brb", "tabs > spaces", "🐴", "whinny", "hmm"];
@@ -315,7 +316,7 @@ export default class Stable extends View {
     const nappers = pizzaHere ? [] : idle.filter((a) => now - this.idleSince[a.address] > NAP_AFTER).slice(0, STRAW_SPOTS);
     const chatters = idle.filter((a) => !nappers.includes(a));
     const place = {};
-    nappers.forEach((a, k) => { place[a.address] = { spot: "couch", x: g.couchX + k * 4 * P, y: g.floorY, face: 1 }; });
+    nappers.forEach((a, k) => { place[a.address] = { spot: "couch", x: g.couchX + 3 * P + k * NAP_GAP * P, y: g.floorY, face: 1 }; });
     const hub = pizzaHere ? { left: g.zoneX - 24 * P, right: g.zoneX + A.FEED.width * P - 2 * P }
       : { left: g.coolerX - (A.HORSE - 3) * P, right: g.coolerX + A.TROUGH.width * P - 2 * P };
     chatters.forEach((a, k) => {
@@ -666,6 +667,14 @@ export default class Stable extends View {
     else if (st === "done") said = bubble("#2f9a50").child("✓");
     at.headTop = headTop;
 
+    // Away from its stall, a horse carries a small copy of its nameplate under its hooves.
+    const tag = at.spot !== "desk" && !walking
+      ? div().absolute().left(napping ? 2 * P : 0).top(A.BOX * P + 4).max_w((NAP_GAP - 1) * P).h(13).px(4).gap(3)
+        .rounded(3).flex().items_center().bg("#00000066").text_size(9).text_color("#fffaf0")
+        .child(div().size(5).flex_none().rounded_full().bg(STATUS[a.status] ?? STATUS.idle))
+        .child(div().truncate().child(a.space_name + (a.tab_name ? ` · ${a.tab_name}` : "")))
+      : null;
+
     // The bubble rides in its own zero-size box that follows the horse, so the scene can
     // draw it above the night dimming without it catching the horse's clicks.
     const follow = (el, id) => el.id(id).absolute().left(at.x).top(at.y - A.BOX * P)
@@ -680,7 +689,8 @@ export default class Stable extends View {
           cx.notify();
         })
         .child(body),
-      said: said && follow(div(), `said-${a.address}`).w(0).h(0).child(said),
+      said: (said || tag) && follow(div(), `said-${a.address}`).w(0).h(0)
+        .when(Boolean(said), (el) => el.child(said)).when(Boolean(tag), (el) => el.child(tag)),
     };
   }
 

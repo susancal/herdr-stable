@@ -22,7 +22,7 @@ If you like the stable, please star and use [the original](https://github.com/Du
 
 ## What the horses do
 
-Each agent gets its own stall, a coat color that stays the same for its terminal, and a nameplate with its space and tab. Click a horse or its stall to go to that agent's terminal, or hover over a horse to see its terminal title.
+Each agent gets its own stall, a coat color that stays the same for its terminal, and a nameplate with its space and tab. Click a horse or its stall to go to that agent's terminal, or hover over a horse to see its terminal title. When a horse leaves its stall for the trough or the straw, it shows a small copy of its nameplate under its hooves, so you can tell which agent it is.
 
 | Agent state | What the horse does |
 |---|---|
@@ -73,7 +73,7 @@ The windows can show your real weather, and the setting is off by default becaus
 ## Known limits
 
 - The stable counts finishes for the ribbon wall and the apples only while it is the layout on screen.
-- With more than about 4 horses in a normal-width window, the trough and straw pile run off the right edge of the strip.
+- With 5 or more horses in a normal-width window, the trough and straw pile run off the right edge of the strip.
 - The stable keeps the count of recent finishes that starts an apple party in memory, so a reload resets it. The party itself survives reloads.
 
 ## Ideas
