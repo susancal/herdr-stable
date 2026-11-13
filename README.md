@@ -33,6 +33,8 @@ Each agent gets its own stall, a coat color that stays the same for its terminal
 | Blocked for 5 minutes | Rears up and yells "NEIGH!!", and the barn flashes red |
 | Done and not yet seen | Hops with a blue ribbon and confetti until you look at its terminal |
 
+A horse that is done or blocked drops a pile of poop in its stall every 10 minutes until you look at its terminal, and a pile that sits for more than 20 minutes gets flies. The piles disappear when you open that agent's terminal or answer it, and the "MUCK" row on the barn chalkboard counts every pile in the barn.
+
 Sub-agents show up as foals beside their parent's manger, and agents on another machine appear on a pasture video call on the wall. When 3 agents finish within 5 minutes, a pony brings a bucket of apples, and the idle horses gather around it for 8 minutes.
 
 The board next to the chalkboard collects a ribbon each time an agent finishes, and it starts empty each day. Hover over a ribbon to see who earned it and when. The barn cat naps on empty mangers.
