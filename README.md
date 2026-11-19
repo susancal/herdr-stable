@@ -49,7 +49,7 @@ The board next to the chalkboard collects a ribbon each time an agent finishes, 
 | A horse arrives or leaves | A clip-clop (`trot.mp3`) | The stable |
 | The apples arrive | Chewing (`crunch.mp3`) | The stable |
 
-Herdr plays its "done" and "blocked" alerts only when you aren't looking at that agent, and the alert files apply in every layout. The stable plays its own sounds one at a time, and it plays nothing when it reloads. The sources and licenses are in `mods/stable/sounds/CREDITS.md`.
+Herdr plays its "done" and "blocked" alerts only when you aren't looking at that agent, and the alert files apply in every layout. The stable plays its own sounds one at a time, and it plays nothing when it reloads. To silence everything, e.g., during a meeting, turn off sounds in Herdr's Settings > Alerts, which sets `"enabled": false` in the `sounds` section of `settings.json`. Turning sounds off mutes Herdr's alerts and the stable's own sounds. The sources and licenses are in `mods/stable/sounds/CREDITS.md`.
 
 ## Install
 
