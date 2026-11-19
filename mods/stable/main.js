@@ -7,7 +7,7 @@
 // lives here. Lights go down after dark, the windows show the real weather, and the barn
 // decorates for the season. Hover a horse to see what it's on; click to go to its terminal.
 import { View, div, svg } from "gpui-kit";
-import { agents, terminals, spaces, panes, shared, run, setAgentOrder, playSound } from "herdr";
+import { agents, terminals, spaces, panes, shared, run, setAgentOrder, playSound, settings } from "herdr";
 import * as A from "./art.js";
 import * as D from "./decor.js";
 
@@ -153,10 +153,11 @@ export default class Stable extends View {
 
   // One sound at a time: anything inside the gap after the last one is dropped, so a
   // crowd arriving together trots in once. Nothing plays on the first render after a
-  // reload, when everyone is already here.
+  // reload, when everyone is already here. Herdr's sound switch in Settings mutes the barn too.
   sound(name) {
     const now = Date.now();
     if (!this.started || now - this.lastSound < SOUND_GAP) return;
+    if (settings().sounds?.enabled === false) return;
     this.lastSound = now;
     playSound(`mods/stable/sounds/${name}.mp3`);
   }
